@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="ko" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청원중 2학년 1반 스마트 알리미</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+            insta: ['Grand Hotel', 'cursive'],
+          },
+          colors: {
+            insta: {
+              heart: '#ED4956',
+              blue: '#0095F6',
+              story: '#E1306C',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Pretendard 한글 폰트 & Instagram 서체용 Grand Hotel 폰트 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet">
+
+  <!-- Confetti 폭죽 효과 CDN & PapaParse 5.4.1 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+    }
+    
+    /* 인스타그램 시그니처 45도 그라디언트 링 */
+    .insta-story-ring {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      padding: 2.2px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+    .insta-story-ring:hover {
+      transform: scale(1.06);
+    }
+    
+    /* 인스타그램 스타일 하트 애니메이션 */
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.28); }
+      50% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+    .heart-active svg {
+      animation: heartBeat 0.35s ease-in-out;
+      fill: #ED4956 !important;
+      stroke: #ED4956 !important;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#000000] text-[#262626] dark:text-[#F5F5F5] min-h-screen transition-colors duration-200">
+
+  <!-- 전체 레이아웃 (인스타그램 피드 너비 최적화 컨테이너) -->
+  <div class="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+
+    <!-- 1. 인스타그램 공식 스타일 상단 내비게이션 바 -->
+    <header class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl px-5 py-4 mb-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      
+      <!-- 좌측: 인스타 로고 & 타이틀 & 급훈 -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-full p-[2px] insta-story-ring shrink-0">
+          <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full flex items-center justify-center font-black text-sm text-[#262626] dark:text-white border-2 border-white dark:border-[#121212]">
+            2-1
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-insta text-2xl text-[#262626] dark:text-white leading-none tracking-tight">Classgram</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">청원중 2학년 1반 스마트 알리미</span>
+          </div>
+          <p class="text-xs text-[#737373] dark:text-[#A8A8A8] mt-1 font-medium flex items-center gap-1.5">
+            <span>서로 존중하며 매일매일 함께 빛나는 우리 ✨</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- 우측 액션 바: 실시간 시계, 다크모드, 새로고침 -->
+      <div class="flex items-center gap-2.5 self-end md:self-auto">
+        <!-- 실시간 디지털 시계 -->
+        <div class="bg-[#F5F5F5] dark:bg-[#262626] px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-tight text-[#262626] dark:text-[#EFEFEF] flex items-center gap-2 border border-[#E5E5E5] dark:border-[#363636]">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="digital-clock">2026.10.12 (월) 00:00:00</span>
+        </div>
+
+        <!-- 새로고침 버튼 -->
+        <button onclick="refreshDashboard()" title="새로고침" class="p-2 rounded-full border border-[#DBDBDB] dark:border-[#262626] hover:bg-neutral-100 dark:hover:bg-neutral-800 text-[#262626] dark:text-white transition-all active:scale-90">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+          </svg>
+        </button>
+
+        <!-- 다크모드 토글 버튼 -->
+        <button onclick="toggleDarkMode()" title="다크모드 전환" class="p-2 rounded-full border border-[#DBDBDB] dark:border-[#262626] hover:bg-neutral-100 dark:hover:bg-neutral-800 text-[#262626] dark:text-white transition-all active:scale-90">
+          <svg id="sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"></path>
+          </svg>
+          <svg id="moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"></path>
+          </svg>
+        </button>
+      </div>
+
+    </header>
+
+    <!-- 2. 오늘의 긍정한줄 (연보라 배경 & 리얼 인스타그램 DM 말풍선 & 따옴표 완전 제거 & 가독성 극대화) -->
+    <section class="bg-[#F8F4FF] dark:bg-[#1A1226] border border-[#E9DCFA] dark:border-[#382752] rounded-3xl p-4 sm:p-6 mb-6 shadow-[0_4px_24px_rgba(124,58,237,0.06)] transition-all">
+      
+      <!-- 인스타 DM 대화 상대 헤더 -->
+      <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-[#EDE2FB] dark:border-[#2D1F42]">
+        <div class="flex items-center gap-3">
+          <!-- 아바타: 인스타 스토리 그라디언트 링 -->
+          <div class="w-10 h-10 rounded-full insta-story-ring shrink-0">
+            <div class="w-full h-full bg-white dark:bg-[#1A1226] rounded-full flex items-center justify-center font-black text-xs text-[#7C3AED] dark:text-[#C4B5FD] border-2 border-white dark:border-[#1A1226]">
+              2-1
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-sm sm:text-base text-[#1E192B] dark:text-white">class2_1.positive</span>
+              <!-- 인스타 공식 인증 마크 파란 배지 -->
+              <svg class="w-3.5 h-3.5 text-[#0095F6] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            <p class="text-[11px] sm:text-xs text-[#8E7EA9] dark:text-[#A798C2] font-medium flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+              <span>오늘의 긍정 DM • 새로고침 시 무작위 도착</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- 우측 액션 버튼들 -->
+        <div class="flex items-center gap-2">
+          <button onclick="pickRandomQuote(true)" title="새로운 명언 랜덤 뽑기" class="px-3 py-1.5 rounded-full bg-white dark:bg-[#2A1D3D] hover:bg-[#FAF7FE] text-[#7C3AED] dark:text-[#D8B4FE] border border-[#E0D0F5] dark:border-[#4E3570] text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs active:scale-95">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M4.5 12c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M12 7.5v9m-4.5-4.5h9" />
+            </svg>
+            <span>🎲 다른 한줄</span>
+          </button>
+          <button onclick="toggleQuoteWriting()" id="btn-toggle-writing" title="선생님 직접 메시지 작성" class="px-3.5 py-1.5 rounded-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+            <span>✏️ 직접 쓰기</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 리얼 인스타그램 DM 말풍선 영역 (가독성 100% 극대화 & 따옴표 완전 제거) -->
+      <div class="flex items-start gap-3 my-2">
+        <div class="w-8 h-8 rounded-full bg-[#EDE2FB] dark:bg-[#2D1F42] text-[#7C3AED] dark:text-[#D8B4FE] flex items-center justify-center font-bold text-xs shrink-0 mt-1 select-none shadow-xs">
+          쌤
+        </div>
+
+        <div class="max-w-[94%] sm:max-w-[88%] flex-1">
+          <!-- 말풍선 본체 (인스타 DM 정통 둥근 버블) -->
+          <div class="relative group bg-white dark:bg-[#231838] border border-[#E8DAFA] dark:border-[#3E295C] rounded-2xl sm:rounded-3xl rounded-tl-sm sm:rounded-tl-sm px-5 py-4 shadow-[0_3px_12px_rgba(124,58,237,0.05)] hover:border-[#C4B5FD] transition-all">
+            <!-- 본문 텍스트: 17~18px 볼드, 고대비, 따옴표 일체 없음! -->
+            <p id="quote-text" class="text-[16.5px] sm:text-[18px] font-bold text-[#1F192F] dark:text-[#F7F4FD] leading-[1.65] break-keep tracking-[-0.015em]">
+              로딩 중입니다...
+            </p>
+
+            <!-- 인스타 DM 시그니처 하트 리액션 배지 -->
+            <div onclick="addQuoteHeart()" title="좋아요 누르기" class="absolute -bottom-2.5 right-4 bg-white dark:bg-[#2E1F47] border border-[#EADBFA] dark:border-[#4B3570] rounded-full px-2 py-0.5 text-[11px] font-bold text-[#ED4956] shadow-xs flex items-center gap-1 cursor-pointer select-none hover:scale-110 active:scale-95 transition-transform">
+              <span>❤️</span>
+              <span id="quote-heart-count">24</span>
+            </div>
+          </div>
+
+          <!-- 말풍선 하단: 출처 및 상태 표시 -->
+          <div class="flex items-center gap-2 mt-3 px-1 text-xs text-[#8E7EA9] dark:text-[#A798C2]">
+            <span class="font-medium">방금 도착함</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1 font-bold text-[#7C3AED] dark:text-[#C4B5FD] bg-white/80 dark:bg-[#231838]/80 px-2.5 py-0.5 rounded-full border border-[#EADBFA] dark:border-[#3E295C]">
+              <span>🏷️</span>
+              <span id="quote-source">출처</span>
+            </span>
+            <span id="custom-quote-badge" class="hidden text-[10px] font-extrabold text-[#059669] bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
+              선생님 등록
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 선생님 직접 작성 인터페이스 (인스타그램 DM 메시지 전송 패널) -->
+      <div id="quote-writer-panel" class="hidden mt-4 pt-4 border-t border-[#EDE2FB] dark:border-[#2D1F42]">
+        <div class="bg-white dark:bg-[#231838] border border-[#DDD0F5] dark:border-[#473069] rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="text-xs font-bold text-[#7C3AED] dark:text-[#C4B5FD] flex items-center gap-1.5">
+              <span>✍️</span>
+              <span>학생들에게 전할 오늘의 긍정 메시지 (따옴표 없이 입력해주세요)</span>
+            </span>
+            <button onclick="toggleQuoteWriting()" class="text-xs text-[#9B8CAF] hover:text-[#7C3AED] font-semibold">닫기 ✕</button>
+          </div>
+          
+          <textarea id="quote-custom-text-input" rows="2" class="w-full bg-[#FAF7FE] dark:bg-[#1A1226] border border-[#E3D4FA] dark:border-[#3E2A59] rounded-xl px-3.5 py-2.5 text-sm sm:text-base font-bold text-[#1F192F] dark:text-white placeholder-[#B4A7C9] focus:outline-none focus:border-[#7C3AED] transition-all resize-none" placeholder="학생들에게 힘이 될 문장을 적어주세요"></textarea>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mt-2.5">
+            <input id="quote-custom-source-input" type="text" class="bg-[#FAF7FE] dark:bg-[#1A1226] border border-[#E3D4FA] dark:border-[#3E2A59] rounded-xl px-3 py-1.5 text-xs font-semibold text-[#1F192F] dark:text-white placeholder-[#B4A7C9] focus:outline-none focus:border-[#7C3AED]" placeholder="출처 (예: 담임선생님, 드라마 《이태원 클라쓰》)" />
+            
+            <div class="flex items-center gap-2 self-end sm:self-auto">
+              <button onclick="resetQuoteToPool()" id="btn-reset-quote" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                랜덤 명언 모드로 복귀
+              </button>
+              <button onclick="submitCustomQuote()" class="bg-[#7C3AED] hover:bg-[#6D28D9] text-white px-4 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5">
+                <span>보내기</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. 인스타그램 시그니처 스토리 바 (Stories) -->
+    <div class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl p-4 mb-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] overflow-x-auto scrollbar-none">
+      <div class="flex items-center gap-5 sm:gap-6 min-w-max">
+        
+        <!-- 스토리 1: 시간표 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-timetable')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              📅
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">시간표</span>
+        </div>
+
+        <!-- 스토리 2: 결보강 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-changes')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              ⚠️
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">결보강</span>
+        </div>
+
+        <!-- 스토리 3: 수행과제 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-assignments')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              📝
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">수행과제</span>
+        </div>
+
+        <!-- 스토리 4: 학사일정 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-calendar')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              📌
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">학사일정</span>
+        </div>
+
+        <!-- 스토리 5: 급식 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-meal')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              🍱
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">오늘급식</span>
+        </div>
+
+        <!-- 스토리 6: 생일 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-birthday')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              🎂
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">생일친구</span>
+        </div>
+
+        <!-- 스토리 7: 담임한마디 -->
+        <div class="flex flex-col items-center gap-1.5 cursor-pointer group" onclick="scrollToCard('card-teacher')">
+          <div class="w-14 h-14 insta-story-ring">
+            <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-2xl">
+              💬
+            </div>
+          </div>
+          <span class="text-[11.5px] font-semibold text-[#262626] dark:text-[#EFEFEF] group-hover:text-insta-story">담임쌤</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. 메인 그리드 (인스타그램 포스트 피드형 3열 카드 배치) -->
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+
+      <!-- =================================================================
+           포스트 1 [2학년 1반 시간표] (가로 2열 와이드 인스타그램 포스트 카드)
+           ================================================================= -->
+      <article id="card-timetable" class="lg:col-span-2 bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        
+        <!-- 인스타 포스트 헤더 -->
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                📅
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-sm text-[#262626] dark:text-white">timetable.2_1</span>
+                <!-- 블루 체크 인증 마크 -->
+                <svg class="w-4 h-4 text-[#0095F6]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span class="text-xs text-[#737373]">• 2학년 1반 시간표</span>
+              </div>
+              <p id="timetable-subtitle" class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]">오늘 요일 자동 감지</p>
+            </div>
+          </div>
+
+          <!-- 오늘 / 주간 토글 버튼 (인스타그램 탭 스타일) -->
+          <div class="flex items-center bg-[#F0F2F5] dark:bg-[#262626] p-1 rounded-full text-xs font-semibold">
+            <button id="view-today-btn" onclick="setTimetableView('today')" class="px-3 py-1 rounded-full bg-white dark:bg-[#363636] text-[#262626] dark:text-white shadow-sm transition-all">
+              오늘
+            </button>
+            <button id="view-week-btn" onclick="setTimetableView('week')" class="px-3 py-1 rounded-full text-[#737373] dark:text-[#A8A8A8] hover:text-black dark:hover:text-white transition-all">
+              주간
+            </button>
+          </div>
+        </div>
+
+        <!-- 인스타 포스트 비주얼 영역 (시간표 카드 뷰) -->
+        <div class="p-4 sm:p-5 bg-gradient-to-b from-[#FAFAFA] to-white dark:from-[#181818] dark:to-[#121212] min-h-[220px]">
+          <div id="timetable-container">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 인스타 액션 바 (하트, 댓글, 비행기, 북마크) -->
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('시간표를 공유합니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><line x1="22" x2="9.218" y1="2" y2="14.783"></line><polygon points="11.698 20.334 22 2.001 2 9.218 11.268 11.668 20.334 11.698"></polygon></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <!-- 인스타 캡션 & 댓글 -->
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">28</span>개</p>
+          <p class="leading-relaxed">
+            <span class="font-bold mr-1">timetable.2_1</span>
+            2학년 1반 2학기 정규 시간표 업로드 완료! 교실 이동과 교과 준비물을 확인하세요 ✨
+            <span class="text-[#00376B] dark:text-[#70C5FB] font-medium">#청원중 #2학년1반 #시간표</span>
+          </p>
+          <span class="text-[11px] text-[#8E8E8E] block mt-1">댓글 4개 모두 보기</span>
+        </div>
+      </article>
+
+      <!-- =================================================================
+           포스트 2 [오늘의 시간표 변동] (결보강 긴급 안내 카드)
+           ================================================================= -->
+      <article id="card-changes" class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                ⚠️
+              </div>
+            </div>
+            <div>
+              <span class="font-bold text-sm text-[#262626] dark:text-white">today.alert</span>
+              <p class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]">오늘의 시간표 변동</p>
+            </div>
+          </div>
+          <span class="text-xs text-[#737373]">•••</span>
+        </div>
+
+        <div class="p-5 bg-gradient-to-b from-[#FAFAFA] to-white dark:from-[#181818] dark:to-[#121212] min-h-[170px] flex items-center justify-center">
+          <div id="changes-container" class="w-full">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">19</span>개</p>
+          <p><span class="font-bold mr-1">today.alert</span> 결강 및 보강 사항이 실시간 연동됩니다. <span class="text-[#00376B] dark:text-[#70C5FB]">#결보강알림</span></p>
+        </div>
+      </article>
+
+      <!-- =================================================================
+           포스트 3 [수행평가 & 과제 마감] (D-Day 자동 정렬 카드)
+           ================================================================= -->
+      <article id="card-assignments" class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                📝
+              </div>
+            </div>
+            <div>
+              <span class="font-bold text-sm text-[#262626] dark:text-white">task.reminder</span>
+              <p class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]">수행평가 & 과제 마감</p>
+            </div>
+          </div>
+          <span class="text-xs text-[#737373]">•••</span>
+        </div>
+
+        <div class="p-5 bg-gradient-to-b from-[#FAFAFA] to-white dark:from-[#181818] dark:to-[#121212] min-h-[170px] flex items-center justify-center">
+          <div id="assignment-container" class="w-full">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">24</span>개</p>
+          <p><span class="font-bold mr-1">task.reminder</span> 마감 기한을 준수하여 미리 준비하세요! <span class="text-[#00376B] dark:text-[#70C5FB]">#과제제출 #수행평가</span></p>
+        </div>
+      </article>
+
+      <!-- =================================================================
+           포스트 4 [학교 학사일정] (주요 행사 타임라인 카드)
+           ================================================================= -->
+      <article id="card-calendar" class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                📌
+              </div>
+            </div>
+            <div>
+              <span class="font-bold text-sm text-[#262626] dark:text-white">cheongwon.calendar</span>
+              <p class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]">학교 학사일정</p>
+            </div>
+          </div>
+          <span class="text-xs text-[#737373]">•••</span>
+        </div>
+
+        <div class="p-5 bg-gradient-to-b from-[#FAFAFA] to-white dark:from-[#181818] dark:to-[#121212] min-h-[170px] flex items-center justify-center">
+          <div id="calendar-container" class="w-full">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">31</span>개</p>
+          <p><span class="font-bold mr-1">cheongwon.calendar</span> 2학기 주요 학교 행사 일정표입니다. <span class="text-[#00376B] dark:text-[#70C5FB]">#학사일정 #청원중학교</span></p>
+        </div>
+      </article>
+
+      <!-- =================================================================
+           포스트 5 [오늘의 맛있는 급식 🍱] (나이스 NEIS 실시간 연동 카드)
+           ================================================================= -->
+      <article id="card-meal" class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                🍱
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-sm text-[#262626] dark:text-white">cheongwon.lunch</span>
+                <svg class="w-3.5 h-3.5 text-[#0095F6]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <p class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]">청원중학교 급식실 (나이스 연동)</p>
+            </div>
+          </div>
+          <span class="text-xs text-[#737373]">•••</span>
+        </div>
+
+        <div class="p-5 bg-gradient-to-b from-[#FAFAFA] to-white dark:from-[#181818] dark:to-[#121212] min-h-[170px] flex items-center justify-center">
+          <div id="meal-container" class="w-full">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">47</span>개</p>
+          <p><span class="font-bold mr-1">cheongwon.lunch</span> 건강하고 맛있는 중식 식단입니다! 남김없이 맛있게 먹어요 😋 <span class="text-[#00376B] dark:text-[#70C5FB]">#급식스타그램 #청원중급식</span></p>
+        </div>
+      </article>
+
+      <!-- =================================================================
+           포스트 6 [이번 달 생일 친구 🎂] (폭죽 효과 카드)
+           ================================================================= -->
+      <article id="card-birthday" class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                🎂
+              </div>
+            </div>
+            <div>
+              <span class="font-bold text-sm text-[#262626] dark:text-white">birthday.2_1</span>
+              <p class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]"><span id="current-month-text"></span>월의 주인공</p>
+            </div>
+          </div>
+          
+          <button onclick="triggerConfetti()" title="폭죽 터뜨리기" class="text-xs font-bold px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm hover:opacity-95 transition-all active:scale-90 flex items-center gap-1">
+            <span>🎉 축하하기</span>
+          </button>
+        </div>
+
+        <div class="p-5 bg-gradient-to-b from-[#FAFAFA] to-white dark:from-[#181818] dark:to-[#121212] min-h-[170px] flex items-center justify-center">
+          <div id="birthday-container" class="w-full">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">36</span>개</p>
+          <p><span class="font-bold mr-1">birthday.2_1</span> 이번 달 생일 친구들에게 축하 메시지를 전해주세요! <span class="text-[#00376B] dark:text-[#70C5FB]">#생일축하해 #HBD</span></p>
+        </div>
+      </article>
+
+      <!-- =================================================================
+           포스트 7 [담임선생님의 한마디 💬] (응원 메시지 카드)
+           ================================================================= -->
+      <article id="card-teacher" class="bg-white dark:bg-[#121212] border border-[#DBDBDB]/80 dark:border-[#262626] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="p-3.5 sm:p-4 flex items-center justify-between border-b border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 insta-story-ring">
+              <div class="w-full h-full bg-white dark:bg-[#121212] rounded-full border-2 border-white dark:border-[#121212] flex items-center justify-center text-lg">
+                💬
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-sm text-[#262626] dark:text-white">homeroom.teacher</span>
+                <svg class="w-3.5 h-3.5 text-[#0095F6]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <p class="text-[11.5px] text-[#737373] dark:text-[#A8A8A8]">2학년 1반 담임교사</p>
+            </div>
+          </div>
+          <span class="text-xs text-[#737373]">•••</span>
+        </div>
+
+        <!-- 감성 인스타 엽서 비주얼 영역 -->
+        <div class="p-5 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-amber-500/10 dark:from-purple-950/40 dark:via-pink-950/30 dark:to-neutral-900 min-h-[170px] flex items-center justify-center">
+          <div class="p-4 rounded-2xl bg-white/80 dark:bg-black/50 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm text-center">
+            <span class="text-xl mb-1 block">💌</span>
+            <p class="text-xs sm:text-sm font-semibold text-[#262626] dark:text-[#F5F5F5] leading-relaxed">
+              서로 존중하며 매일매일 함께 빛나는 우리 ✨<br>
+              작은 배려가 교실을 가장 따뜻하게 만듭니다.<br>
+              오늘도 힘찬 하루 보내요!
+            </p>
+          </div>
+        </div>
+
+        <div class="px-4 pt-3 flex items-center justify-between border-t border-[#EFEFEF] dark:border-[#262626]">
+          <div class="flex items-center gap-4">
+            <button class="action-btn text-[#262626] dark:text-white heart-active" onclick="toggleHeart(this)">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"/></svg>
+            </button>
+            <button class="action-btn text-[#262626] dark:text-white" onclick="alert('댓글 창을 엽니다.')">
+              <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>
+            </button>
+          </div>
+          <button class="action-btn text-[#262626] dark:text-white" onclick="toggleBookmark(this)">
+            <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="p-4 pt-2 text-xs text-[#262626] dark:text-[#EFEFEF]">
+          <p class="font-bold mb-1">좋아요 <span class="like-count">32</span>개</p>
+          <p><span class="font-bold mr-1">homeroom.teacher</span> 오늘도 멋진 하루를 만들어가는 2-1반 화이팅! <span class="text-[#00376B] dark:text-[#70C5FB]">#사랑하는2학년1반</span></p>
+        </div>
+      </article>
+
+    </main>
+
+  </div>
+
+  <!-- 자바스크립트 로직 -->
+  <script>
+    /* ==========================================================================
+       [P1 시간표 표 데이터 기반 정적 TIMETABLE 상수]
+       - 학기당 1번 바뀌는 정적 데이터
+       - 다음 단계 P5에서 시간표 URL을 요구하더라도 무시하고 본 TIMETABLE을 유지합니다.
+       ========================================================================== */
+    const TIMETABLE = {
+      "월": [
+        { period: 1, time: "09:00 - 09:45", subject: "역사", teacher: "-", room: "본 교실" },
+        { period: 2, time: "09:55 - 10:40", subject: "국어A", teacher: "-", room: "본 교실" },
+        { period: 3, time: "10:50 - 11:35", subject: "체육B", teacher: "-", room: "체육관/운동장" },
+        { period: 4, time: "11:45 - 12:30", subject: "도덕", teacher: "-", room: "본 교실" },
+        { period: 5, time: "13:30 - 14:15", subject: "기가A", teacher: "-", room: "기술가정실" },
+        { period: 6, time: "14:25 - 15:10", subject: "음악", teacher: "-", room: "음악실" },
+        { period: 7, time: "15:20 - 16:05", subject: "창체", teacher: "-", room: "본 교실" }
+      ],
+      "화": [
+        { period: 1, time: "09:00 - 09:45", subject: "수학", teacher: "-", room: "본 교실" },
+        { period: 2, time: "09:55 - 10:40", subject: "체육A", teacher: "-", room: "체육관/운동장" },
+        { period: 3, time: "10:50 - 11:35", subject: "영어A", teacher: "-", room: "본 교실" },
+        { period: 4, time: "11:45 - 12:30", subject: "스클", teacher: "-", room: "체육관/운동장" },
+        { period: 5, time: "13:30 - 14:15", subject: "과학A", teacher: "-", room: "과학실" },
+        { period: 6, time: "14:25 - 15:10", subject: "한문", teacher: "-", room: "본 교실" }
+      ],
+      "수": [
+        { period: 1, time: "09:00 - 09:45", subject: "국어A", teacher: "-", room: "본 교실" },
+        { period: 2, time: "09:55 - 10:40", subject: "기가B", teacher: "-", room: "기술가정실" },
+        { period: 3, time: "10:50 - 11:35", subject: "수학", teacher: "-", room: "본 교실" },
+        { period: 4, time: "11:45 - 12:30", subject: "영어A", teacher: "-", room: "본 교실" },
+        { period: 5, time: "13:30 - 14:15", subject: "도덕", teacher: "-", room: "본 교실" },
+        { period: 6, time: "14:25 - 15:10", subject: "미술", teacher: "-", room: "미술실" },
+        { period: 7, time: "15:20 - 16:05", subject: "미술", teacher: "-", room: "미술실" }
+      ],
+      "목": [
+        { period: 1, time: "09:00 - 09:45", subject: "창체", teacher: "-", room: "본 교실" },
+        { period: 2, time: "09:55 - 10:40", subject: "수학", teacher: "-", room: "본 교실" },
+        { period: 3, time: "10:50 - 11:35", subject: "과학B", teacher: "-", room: "과학실" },
+        { period: 4, time: "11:45 - 12:30", subject: "음악", teacher: "-", room: "음악실" },
+        { period: 5, time: "13:30 - 14:15", subject: "국어B", teacher: "-", room: "본 교실" },
+        { period: 6, time: "14:25 - 15:10", subject: "체육B", teacher: "-", room: "체육관/운동장" }
+      ],
+      "금": [
+        { period: 1, time: "09:00 - 09:45", subject: "역사", teacher: "-", room: "본 교실" },
+        { period: 2, time: "09:55 - 10:40", subject: "영어B", teacher: "-", room: "본 교실" },
+        { period: 3, time: "10:50 - 11:35", subject: "국어B", teacher: "-", room: "본 교실" },
+        { period: 4, time: "11:45 - 12:30", subject: "수학", teacher: "-", room: "본 교실" },
+        { period: 5, time: "13:30 - 14:15", subject: "기가B", teacher: "-", room: "기술가정실" },
+        { period: 6, time: "14:25 - 15:10", subject: "과학A", teacher: "-", room: "과학실" },
+        { period: 7, time: "15:20 - 16:05", subject: "한문", teacher: "-", room: "본 교실" }
+      ]
+    };
+
+    /* ==========================================================================
+       [가짜 샘플 데이터(Mock) 제외 - 빈 상태 안내 문구 표출용 빈 배열]
+       ========================================================================== */
+    const SCHEDULE_CHANGES = [];
+    const ACADEMIC_EVENTS = [];
+    const BIRTHDAYS = [];
+
+    // [공유]→"링크가 있는 모든 사용자"로 바꾼 뒤 주소창 링크 통째로
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/1n20mL1slix6tdR_woJaBVLmQ6CTyEIZ-tXbgJUeaalY/edit?usp=sharing";
+
+    /* ==========================================================================
+       [오늘의 긍정한줄 - 인스타그램 DM 감성]
+       - 새로고침 시 풍부한 풀(드라마 대사, 책 구절, 명언)에서 랜덤으로 자동 변경!
+       - 사용자 직접 타이핑 및 localStorage 영구 저장 지원
+       ========================================================================== */
+    const POSITIVE_QUOTES_POOL = [
+      { text: "잊지 말라, 네가 꽃피울 차례는 반드시 온다.", source: "드라마 《미생》" },
+      { text: "세상에서 가장 어려운 일은 사람이 사람의 마음을 얻는 일이란다.", source: "생텍쥐페리 《어린 왕자》" },
+      { text: "행복의 한쪽 문이 닫히면 다른 쪽 문이 열린다. 고개를 들고 빛을 바라보자.", source: "헬렌 켈러" },
+      { text: "너는 너대로 충분히 눈부시고 빛나. 남들과 비교하며 기죽지 마!", source: "드라마 《동백꽃 필 무렵》" },
+      { text: "자세히 보아야 예쁘다. 오래 보아야 사랑스럽다. 너도 그렇다.", source: "나태주 시집 《풀꽃》" },
+      { text: "서두르지 않아도 괜찮아. 천천히 걸어가도 우리는 우리니까.", source: "김신회 《보노보노처럼 살다니 다행이야》" },
+      { text: "어제는 역사이고, 내일은 미스터리지만, 오늘은 신이 주신 선물이야.", source: "영화 《쿵푸팬더》" },
+      { text: "당신의 계절은 아직 오지 않았을 뿐, 언젠가 가장 눈부시게 피어날 거예요.", source: "드라마 《스타트업》" },
+      { text: "흔들리지 않고 피는 꽃이 어디 있으랴. 그 어떤 아름다운 꽃들도 다 흔들리며 피었나니.", source: "도종환 시인" },
+      { text: "카르페 디엠(Carpe Diem), 오늘을 온전히 살아라. 너만의 특별한 이야기를 만들어가라.", source: "영화 《죽은 시인의 사회》" },
+      { text: "엘리자가 말했어요, 세상은 생각대로 되지 않는다고. 하지만 생각대로 되지 않는다는 건 정말 멋져요! 생각지도 못했던 일이 일어나는 거니까요.", source: "루시 M. 몽고메리 《빨강 머리 앤》" },
+      { text: "내 가치를 네가 정하지 마. 내 인생 이제 시작이고, 난 원하는 거 다 이루면서 살 거야.", source: "드라마 《이태원 클라쓰》" },
+      { text: "인생은 자전거를 타는 것과 같다. 균형을 잡으려면 계속 움직여야 한다.", source: "알베르트 아인슈타인" },
+      { text: "시간은 삶이며, 삶은 우리 마음속에 깃들어 있는 것이다.", source: "미하엘 엔데 《모모》" },
+      { text: "알 이즈 웰(All is well), 모든 것은 다 잘 될 거야. 마음을 안심시켜 줘.", source: "영화 《세 얼간이》" },
+      { text: "꿈꿀 수 있다면, 당신은 그것을 충분히 해낼 수 있습니다.", source: "월트 디즈니" },
+      { text: "말에는 가슴이 담긴다. 그러니 말 한마디에도 따뜻한 체온이 있는 법이다.", source: "드라마 《응답하라 1988》" },
+      { text: "새는 알에서 나오려고 투쟁한다. 알은 세계이다. 태어나려는 자는 하나의 세계를 깨뜨려야 한다.", source: "헤르만 헤세 《데미안》" },
+      { text: "가장 어두운 밤도 언젠가는 끝나고, 태양은 다시 떠오를 것이다.", source: "빅토르 위고 《레 미제라블》" },
+      { text: "너는 머뭇거릴 수 있지만, 시간은 결코 머뭇거리지 않는다. 지금 시작하자!", source: "벤자민 프랭클린" },
+      { text: "꽃이 진다고 그대를 잊은 적 없다. 별이 진다고 사랑이 식은 적 없다.", source: "정호승 시집" },
+      { text: "누군가의 구름에 무지개가 되어주어라.", source: "마야 안젤루" }
+    ];
+
+    let lastRandomQuoteIndex = -1;
+    let quoteHeartCount = 24;
+
+    /* 모든 형태의 따옴표 및 불필요한 공백을 완전히 박멸하는 정규식 함수 */
+    function stripQuotes(str) {
+      if (!str) return '';
+      return String(str).replace(/["'“”]/g, '').trim();
+    }
+
+    function getRandomQuote() {
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * POSITIVE_QUOTES_POOL.length);
+      } while (idx === lastRandomQuoteIndex && POSITIVE_QUOTES_POOL.length > 1);
+      lastRandomQuoteIndex = idx;
+      return POSITIVE_QUOTES_POOL[idx];
+    }
+
+    function renderDailyQuote(forceRandom = false) {
+      const quoteTextEl = document.getElementById('quote-text');
+      const quoteSourceEl = document.getElementById('quote-source');
+      const customBadge = document.getElementById('custom-quote-badge');
+      if (!quoteTextEl || !quoteSourceEl) return;
+
+      // 1. 강제 랜덤이 아니고, 선생님이 직접 작성해둔 문구가 있으면 우선 노출
+      if (!forceRandom) {
+        const savedCustom = localStorage.getItem('custom_positive_quote');
+        if (savedCustom) {
+          try {
+            const parsed = JSON.parse(savedCustom);
+            if (parsed && parsed.text) {
+              quoteTextEl.textContent = stripQuotes(parsed.text);
+              quoteSourceEl.textContent = stripQuotes(parsed.source || '담임선생님');
+              if (customBadge) customBadge.classList.remove('hidden');
+              return;
+            }
+          } catch(e) {}
+        }
+      }
+
+      // 2. 새로고침 또는 랜덤 뽑기: 풀에서 무작위 선택 (따옴표 100% 제거)
+      const randomQuote = getRandomQuote();
+      quoteTextEl.textContent = stripQuotes(randomQuote.text);
+      quoteSourceEl.textContent = stripQuotes(randomQuote.source);
+      if (customBadge) customBadge.classList.add('hidden');
+    }
+
+    function pickRandomQuote(manual = false) {
+      renderDailyQuote(true);
+      if (manual && typeof confetti === 'function') {
+        confetti({
+          particleCount: 30,
+          spread: 50,
+          origin: { y: 0.22 }
+        });
+      }
+    }
+
+    function toggleQuoteWriting() {
+      const panel = document.getElementById('quote-writer-panel');
+      const textInput = document.getElementById('quote-custom-text-input');
+      const sourceInput = document.getElementById('quote-custom-source-input');
+      if (!panel) return;
+
+      const isHidden = panel.classList.contains('hidden');
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        const curText = document.getElementById('quote-text').textContent;
+        const curSource = document.getElementById('quote-source').textContent;
+        textInput.value = stripQuotes(curText);
+        sourceInput.value = stripQuotes(curSource);
+        textInput.focus();
+      } else {
+        panel.classList.add('hidden');
+      }
+    }
+
+    function submitCustomQuote() {
+      const textInput = document.getElementById('quote-custom-text-input');
+      const sourceInput = document.getElementById('quote-custom-source-input');
+      const text = stripQuotes(textInput.value);
+      const source = stripQuotes(sourceInput.value) || '담임선생님';
+
+      if (!text) {
+        alert("학생들에게 전할 메시지를 입력해 주세요!");
+        textInput.focus();
+        return;
+      }
+
+      const quoteObj = { text, source };
+      localStorage.setItem('custom_positive_quote', JSON.stringify(quoteObj));
+      renderDailyQuote(false);
+      toggleQuoteWriting();
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 45,
+          spread: 60,
+          origin: { y: 0.22 }
+        });
+      }
+    }
+
+    function resetQuoteToPool() {
+      localStorage.removeItem('custom_positive_quote');
+      renderDailyQuote(true);
+      toggleQuoteWriting();
+      alert("랜덤 명언 모드로 복귀했습니다 ✨");
+    }
+
+    function addQuoteHeart() {
+      quoteHeartCount++;
+      const el = document.getElementById('quote-heart-count');
+      if (el) el.textContent = quoteHeartCount;
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 20,
+          spread: 40,
+          origin: { y: 0.22 }
+        });
+      }
+    }
+
+    let currentTimetableView = 'today';
+
+    /* 실시간 디지털 시계 */
+    function updateClock() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+      const day = dayNames[now.getDay()];
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+
+      const clockEl = document.getElementById('digital-clock');
+      if (clockEl) {
+        clockEl.textContent = `${yyyy}.${mm}.${dd} (${day}) ${hh}:${min}:${ss}`;
+      }
+    }
+
+    function getTodayDayName() {
+      const map = { 1: "월", 2: "화", 3: "수", 4: "목", 5: "금" };
+      return map[new Date().getDay()] || null;
+    }
+
+    /* 시간표 렌더링 (오늘/주간 토글) */
+    function renderTimetable() {
+      const container = document.getElementById('timetable-container');
+      const subtitle = document.getElementById('timetable-subtitle');
+      const todayDay = getTodayDayName();
+      const targetDay = todayDay || "월";
+
+      if (currentTimetableView === 'today') {
+        subtitle.textContent = todayDay 
+          ? `오늘(${todayDay}요일) 수업 일정` 
+          : `주말입니다 (다음 월요일 시간표 안내)`;
+
+        const list = TIMETABLE[targetDay] || [];
+        container.innerHTML = `
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            ${list.map(item => `
+              <div class="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#EBEBEB] dark:border-[#2C2C2E] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-neutral-400 dark:hover:border-neutral-600 transition-all">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-xs font-black text-rose-500 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md">
+                    ${item.period}교시
+                  </span>
+                  <span class="text-[11px] text-[#8E8E8E] font-medium">${item.time}</span>
+                </div>
+                <div class="text-base font-extrabold text-[#262626] dark:text-white my-1">
+                  ${item.subject}
+                </div>
+                <div class="flex items-center justify-between text-[11.5px] text-[#737373] dark:text-[#A8A8A8] pt-2 border-t border-[#F0F0F0] dark:border-[#262626] mt-2">
+                  <span>교사: ${item.teacher}</span>
+                  <span class="font-semibold text-neutral-700 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded">
+                    ${item.room}
+                  </span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        subtitle.textContent = "월~금 2학년 1반 주간 전체 시간표";
+        const days = ["월", "화", "수", "목", "금"];
+        container.innerHTML = `
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            ${days.map(d => {
+              const isToday = d === todayDay;
+              const dayList = TIMETABLE[d] || [];
+              return `
+                <div class="rounded-2xl border ${isToday ? 'border-rose-400 ring-2 ring-rose-100 dark:ring-rose-950/50' : 'border-[#EBEBEB] dark:border-[#2C2C2E]'} bg-white dark:bg-[#1C1C1E] p-3 flex flex-col gap-2">
+                  <div class="text-center font-bold text-xs py-1 rounded-xl ${isToday ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-sm' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300'}">
+                    ${d}요일 ${isToday ? '★' : ''}
+                  </div>
+                  ${dayList.map(item => `
+                    <div class="p-2 rounded-xl bg-[#FAFAFA] dark:bg-[#262626] border border-[#EEEEEE] dark:border-[#333333] text-xs flex items-center justify-between">
+                      <span class="text-[11px] font-black text-rose-500">${item.period}</span>
+                      <span class="font-bold text-[#262626] dark:text-white">${item.subject}</span>
+                      <span class="text-[10px] text-[#8E8E8E]">${item.room.includes('교실') ? '' : '특'}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+    }
+
+    function setTimetableView(view) {
+      currentTimetableView = view;
+      const todayBtn = document.getElementById('view-today-btn');
+      const weekBtn = document.getElementById('view-week-btn');
+      if (view === 'today') {
+        todayBtn.className = "px-3 py-1 rounded-full bg-white dark:bg-[#363636] text-[#262626] dark:text-white shadow-sm transition-all";
+        weekBtn.className = "px-3 py-1 rounded-full text-[#737373] dark:text-[#A8A8A8] hover:text-black dark:hover:text-white transition-all";
+      } else {
+        weekBtn.className = "px-3 py-1 rounded-full bg-white dark:bg-[#363636] text-[#262626] dark:text-white shadow-sm transition-all";
+        todayBtn.className = "px-3 py-1 rounded-full text-[#737373] dark:text-[#A8A8A8] hover:text-black dark:hover:text-white transition-all";
+      }
+      renderTimetable();
+    }
+
+    /* 오늘의 시간표 변동 (결보강) */
+    function renderScheduleChanges() {
+      const container = document.getElementById('changes-container');
+      if (SCHEDULE_CHANGES.length > 0) {
+        container.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-amber-800 dark:text-amber-300 text-xs font-semibold mb-3">
+            ⚠️ 오늘 시간표 변경(결보강)이 발생했습니다!
+          </div>
+          <div class="space-y-2">
+            ${SCHEDULE_CHANGES.map(item => `
+              <div class="p-3 rounded-xl bg-white dark:bg-[#1C1C1E] border border-[#EAEAEA] dark:border-[#2C2C2E] text-xs flex justify-between">
+                <span class="font-bold">${item.period}교시</span>
+                <span>${item.original} ➡️ <b class="text-amber-600">${item.replacement}</b></span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        // 요구조건: 빈 상태 안내 문구 ("등록된 결보강이 없어요 🙂")
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center py-4">
+            <div class="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 flex items-center justify-center text-2xl mb-2">
+              🙂
+            </div>
+            <p class="text-sm font-bold text-[#262626] dark:text-white">
+              등록된 결보강이 없어요 🙂
+            </p>
+            <p class="text-xs text-[#8E8E8E] mt-1">
+              오늘 모든 수업이 정상 진행됩니다.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    /* ==========================================================================
+       [수행평가 & 과제 마감] 구글 스프레드시트 실시간 연동 (PapaParse 5.4.1)
+       - 정규식 /\/d\/([a-zA-Z0-9-_]+)/ 로 시트 ID 추출
+       - CSV 조회 후 헤더 매칭 (구분/과목명/제목/마감일/제출방법/준비물_세부내용/반영비율)
+       - D-Day, D-1, D-3 뱃지 + 마감 임박순 정렬
+       - 내용 없으면: "등록된 수행평가·과제가 없어요 🙂"
+       ========================================================================== */
+    function getFieldValue(row, keywords) {
+      if (!row) return '';
+      for (const key of Object.keys(row)) {
+        const cleanKey = key.replace(/[\s_\/]/g, '').toLowerCase();
+        for (const kw of keywords) {
+          if (cleanKey.includes(kw)) {
+            return String(row[key] || '').trim();
+          }
+        }
+      }
+      return '';
+    }
+
+    function parseDueDate(dateStr) {
+      if (!dateStr) return null;
+      const s = String(dateStr).trim();
+      const fullMatch = s.match(/(\d{4})[-./\s]+(\d{1,2})[-./\s]+(\d{1,2})/);
+      if (fullMatch) {
+        return new Date(parseInt(fullMatch[1]), parseInt(fullMatch[2]) - 1, parseInt(fullMatch[3]));
+      }
+      const shortMatch = s.match(/(\d{1,2})[-./월\s]+(\d{1,2})/);
+      if (shortMatch) {
+        const currentYear = new Date().getFullYear();
+        return new Date(currentYear, parseInt(shortMatch[1]) - 1, parseInt(shortMatch[2]));
+      }
+      const d = new Date(s);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function showEmptyAssignments() {
+      const container = document.getElementById('assignment-container');
+      if (!container) return;
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center text-center py-4">
+          <div class="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 flex items-center justify-center text-2xl mb-2">
+            📝
+          </div>
+          <p class="text-sm font-bold text-[#262626] dark:text-white">
+            등록된 수행평가·과제가 없어요 🙂
+          </p>
+          <p class="text-xs text-[#8E8E8E] mt-1">
+            과제가 등록되면 마감 임박 순으로 자동 정렬됩니다.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderAssignmentList(items) {
+      const container = document.getElementById('assignment-container');
+      if (!container) return;
+
+      container.innerHTML = items.map(item => {
+        let badgeColor = "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400";
+        let badgeText = `D-${item.diffDays}`;
+
+        if (item.diffDays === 0) {
+          badgeColor = "bg-rose-500 text-white font-black animate-pulse";
+          badgeText = "D-Day";
+        } else if (item.diffDays === 1) {
+          badgeColor = "bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 font-bold";
+          badgeText = "D-1";
+        } else if (item.diffDays === 2 || item.diffDays === 3) {
+          badgeColor = "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold";
+          badgeText = `D-${item.diffDays}`;
+        } else if (item.diffDays < 0) {
+          badgeColor = "bg-neutral-200 dark:bg-neutral-700 text-neutral-500";
+          badgeText = "마감";
+        }
+
+        return `
+          <div class="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#EAEAEA] dark:border-[#2C2C2E] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-neutral-400 dark:hover:border-neutral-600 transition-all">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[11px] font-bold text-neutral-600 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-md">
+                  ${item.category}
+                </span>
+                <span class="text-xs font-black text-rose-500">
+                  ${item.subject}
+                </span>
+                ${item.ratio ? `<span class="text-[10.5px] text-[#8E8E8E] font-medium">(${item.ratio})</span>` : ''}
+              </div>
+              <span class="px-2 py-0.5 rounded-lg text-xs font-black ${badgeColor}">
+                ${badgeText}
+              </span>
+            </div>
+            
+            <div class="text-sm font-extrabold text-[#262626] dark:text-white my-1">
+              ${item.title}
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#737373] dark:text-[#A8A8A8] pt-2 border-t border-[#F0F0F0] dark:border-[#262626] mt-2">
+              <span>마감: ${item.dueDateRaw || '-'} ${item.method ? `• ${item.method}` : ''}</span>
+              ${item.detail ? `<span class="text-rose-500 font-medium">${item.detail}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function processAssignmentRows(rows) {
+      const validItems = [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      for (const row of rows) {
+        const category = getFieldValue(row, ['구분', '분류', '유형']);
+        const subject = getFieldValue(row, ['과목명', '과목', '교과']);
+        // 시트의 '내용' 열을 과제 제목으로 정확히 매칭
+        const title = getFieldValue(row, ['제목', '내용', '과제명', '평가명', '과제']);
+        const dueDateRaw = getFieldValue(row, ['마감일', '마감', '제출일', '기한', '일자', '날짜']);
+        const method = getFieldValue(row, ['제출방법', '제출처', '방법', '제출']);
+        const detail = getFieldValue(row, ['준비물세부내용', '준비물_세부내용', '준비물', '세부내용']);
+        const ratio = getFieldValue(row, ['반영비율', '반영', '비율', '배점']);
+
+        // 빈 행 필터링 (과목명과 제목이 모두 비어있으면 스킵)
+        if (!subject && !title) continue;
+
+        const dueDateObj = parseDueDate(dueDateRaw);
+        let diffDays = 999;
+        if (dueDateObj) {
+          diffDays = Math.ceil((dueDateObj - today) / (1000 * 60 * 60 * 24));
+        }
+
+        validItems.push({
+          category: category || (ratio ? '수행평가' : '과제'),
+          subject: subject || '공통',
+          title: title || '과제 내용 확인',
+          dueDateRaw,
+          dueDateObj,
+          diffDays,
+          method,
+          detail,
+          ratio
+        });
+      }
+      return validItems;
+    }
+
+    // 브라우저의 CORS 및 file:// 환경을 위한 안전한 Google Sheet JSONP 리더
+    function fetchSheetViaJsonp(sheetId) {
+      return new Promise((resolve, reject) => {
+        const callbackName = 'handleGvizSheet_' + Date.now();
+        const script = document.createElement('script');
+
+        window[callbackName] = function(data) {
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+
+          try {
+            if (!data || !data.table || !data.table.rows) {
+              resolve([]);
+              return;
+            }
+
+            const cols = data.table.cols || [];
+            const colLabels = cols.map(c => (c.label || c.id || '').trim());
+
+            const rows = data.table.rows.map(r => {
+              const rowObj = {};
+              (r.c || []).forEach((cell, idx) => {
+                const key = colLabels[idx] || `col_${idx}`;
+                if (cell) {
+                  rowObj[key] = cell.f !== undefined ? cell.f : (cell.v !== null && cell.v !== undefined ? cell.v : '');
+                } else {
+                  rowObj[key] = '';
+                }
+              });
+              return rowObj;
+            });
+
+            resolve(rows);
+          } catch (err) {
+            reject(err);
+          }
+        };
+
+        script.onerror = function() {
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error("JSONP 로드 실패"));
+        };
+
+        script.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=responseHandler:${callbackName}`;
+        document.head.appendChild(script);
+      });
+    }
+
+    async function fetchAssignmentsFromSheet() {
+      try {
+        const match = SHEET_URL.match(/\/d\/([a-zA-Z0-9-_]+)/);
+        if (!match || !match[1]) {
+          showEmptyAssignments();
+          return;
+        }
+        const sheetId = match[1];
+        let rows = [];
+
+        // 1차: 요구조건대로 gviz out:csv + PapaParse 5.4.1 우선 시도
+        try {
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+          const response = await fetch(csvUrl);
+          if (response.ok) {
+            const csvText = await response.text();
+            if (csvText && !csvText.includes('<!DOCTYPE html>') && typeof Papa !== 'undefined') {
+              const parsed = Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true
+              });
+              if (parsed.data && parsed.data.length > 0) {
+                rows = parsed.data;
+              }
+            }
+          }
+        } catch (csvErr) {
+          // 브라우저 CORS 또는 네트워크 정책으로 fetch 실패 시 무음 처리 후 JSONP로 폴백
+        }
+
+        // 2차: 브라우저 CORS 제한 시 Google gviz JSONP로 100% 안정적 로드
+        if (rows.length === 0) {
+          rows = await fetchSheetViaJsonp(sheetId);
+        }
+
+        const validItems = processAssignmentRows(rows);
+
+        if (validItems.length === 0) {
+          showEmptyAssignments();
+          return;
+        }
+
+        // 마감 임박순 정렬 (D-Day 및 가까운 날짜 우선)
+        validItems.sort((a, b) => a.diffDays - b.diffDays);
+
+        renderAssignmentList(validItems);
+
+      } catch (err) {
+        console.warn("구글 스프레드시트 연동 알림 (안전 모드):", err);
+        showEmptyAssignments();
+      }
+    }
+
+    /* 학교 학사일정 */
+    function renderAcademicEvents() {
+      const container = document.getElementById('calendar-container');
+      if (ACADEMIC_EVENTS.length > 0) {
+        container.innerHTML = ACADEMIC_EVENTS.map(item => `
+          <div class="p-3 rounded-xl bg-white dark:bg-[#1C1C1E] border border-[#EAEAEA] dark:border-[#2C2C2E] flex items-center justify-between text-xs">
+            <span class="font-bold">${item.title}</span>
+            <span class="text-indigo-600 font-semibold">${item.date}</span>
+          </div>
+        `).join('');
+      } else {
+        // 요구조건: 빈 상태 안내 문구
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center py-4">
+            <div class="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 flex items-center justify-center text-2xl mb-2">
+              📅
+            </div>
+            <p class="text-sm font-bold text-[#262626] dark:text-white">
+              예정된 주요 학사일정이 없어요 📅
+            </p>
+            <p class="text-xs text-[#8E8E8E] mt-1">
+              시험, 축제, 방학식 일정이 여기에 안내됩니다.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    /* 오늘의 맛있는 급식 (나이스 NEIS 실시간 오픈API) */
+    async function fetchNeisMeal() {
+      const container = document.getElementById('meal-container');
+      const now = new Date();
+      const ymd = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+
+      // 청원중학교 코드 (서울시교육청 B10, 학교코드 7041151)
+      const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=B10&SD_SCHUL_CODE=7041151&MLSV_YMD=${ymd}`;
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("API 오류");
+        const data = await response.json();
+
+        if (data.mealServiceDietInfo && data.mealServiceDietInfo[1] && data.mealServiceDietInfo[1].row) {
+          const row = data.mealServiceDietInfo[1].row[0];
+          const rawDish = row.DDISH_NM || "";
+          const calories = row.CAL_INFO || "";
+
+          const menus = rawDish.split('<br/>')
+            .map(m => m.replace(/\([0-9\.\s]+\)/g, '').trim())
+            .filter(m => m.length > 0);
+
+          if (menus.length > 0) {
+            container.innerHTML = `
+              <div class="w-full">
+                <div class="flex items-center justify-between mb-3 text-xs">
+                  <span class="font-bold text-rose-500">중식 식단</span>
+                  <span class="text-[#8E8E8E]">${calories}</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${menus.map(m => `
+                    <span class="px-2.5 py-1 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-xs font-semibold text-[#262626] dark:text-white">
+                      ${m}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+            return;
+          }
+        }
+        showEmptyMeal();
+      } catch (e) {
+        showEmptyMeal();
+      }
+    }
+
+    function showEmptyMeal() {
+      const container = document.getElementById('meal-container');
+      // 요구조건: 빈 상태 안내 문구 ("오늘의 급식 정보가 없거나 휴일입니다 🍱")
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center text-center py-4">
+          <div class="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 flex items-center justify-center text-2xl mb-2">
+            🍱
+          </div>
+          <p class="text-sm font-bold text-[#262626] dark:text-white">
+            오늘의 급식 정보가 없거나 휴일입니다 🍱
+          </p>
+          <p class="text-xs text-[#8E8E8E] mt-1">
+            주말 또는 급식 미운영일입니다.
+          </p>
+        </div>
+      `;
+    }
+
+    /* 이번 달 생일 친구 */
+    function renderBirthdays() {
+      const container = document.getElementById('birthday-container');
+      const currentMonth = new Date().getMonth() + 1;
+      const monthTextEl = document.getElementById('current-month-text');
+      if (monthTextEl) monthTextEl.textContent = currentMonth;
+
+      if (BIRTHDAYS.length > 0) {
+        container.innerHTML = BIRTHDAYS.map(b => `
+          <div class="p-3 rounded-xl bg-pink-50/70 dark:bg-pink-950/30 border border-pink-100 dark:border-pink-900/40 flex items-center justify-between text-xs">
+            <span class="font-bold">${b.name}</span>
+            <span class="text-pink-600 font-semibold">${b.date}</span>
+          </div>
+        `).join('');
+      } else {
+        // 요구조건: 빈 상태 안내 문구 ("이번 달 생일인 친구가 없어요 🎂")
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center py-4">
+            <div class="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-950/30 text-pink-400 flex items-center justify-center text-2xl mb-2">
+              🎂
+            </div>
+            <p class="text-sm font-bold text-[#262626] dark:text-white">
+              이번 달 생일인 친구가 없어요 🎂
+            </p>
+            <p class="text-xs text-[#8E8E8E] mt-1">
+              상단 버튼을 눌러 미리 축하 폭죽을 터뜨려보세요!
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    /* Confetti 폭죽 효과 */
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 90,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    /* 인스타그램 하트(좋아요) 토글 */
+    function toggleHeart(btn) {
+      const card = btn.closest('article');
+      const countEl = card.querySelector('.like-count');
+      let count = parseInt(countEl.textContent);
+
+      if (btn.classList.contains('heart-active')) {
+        btn.classList.remove('heart-active');
+        btn.querySelector('svg').setAttribute('fill', 'none');
+        btn.querySelector('svg').setAttribute('stroke', 'currentColor');
+        countEl.textContent = count - 1;
+      } else {
+        btn.classList.add('heart-active');
+        btn.querySelector('svg').setAttribute('fill', '#ED4956');
+        btn.querySelector('svg').setAttribute('stroke', '#ED4956');
+        countEl.textContent = count + 1;
+      }
+    }
+
+    /* 인스타그램 북마크 토글 */
+    function toggleBookmark(btn) {
+      const svg = btn.querySelector('svg');
+      if (btn.classList.contains('saved')) {
+        btn.classList.remove('saved');
+        svg.setAttribute('fill', 'none');
+      } else {
+        btn.classList.add('saved');
+        svg.setAttribute('fill', 'currentColor');
+      }
+    }
+
+    /* 스토리 클릭 시 해당 카드로 스크롤 */
+    function scrollToCard(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    /* 다크모드 토글 */
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeIcons();
+    }
+
+    function updateThemeIcons() {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('sun-icon').classList.toggle('hidden', !isDark);
+      document.getElementById('moon-icon').classList.toggle('hidden', isDark);
+    }
+
+    /* 새로고침 */
+    function refreshDashboard() {
+      updateClock();
+      pickRandomQuote(false);
+      renderTimetable();
+      renderScheduleChanges();
+      fetchAssignmentsFromSheet();
+      renderAcademicEvents();
+      fetchNeisMeal();
+      renderBirthdays();
+    }
+
+    /* 초기화 */
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      updateThemeIcons();
+
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      renderDailyQuote();
+      renderTimetable();
+      renderScheduleChanges();
+      fetchAssignmentsFromSheet();
+      renderAcademicEvents();
+      fetchNeisMeal();
+      renderBirthdays();
+    });
+  </script>
+</body>
+</html>
